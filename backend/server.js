@@ -1,7 +1,7 @@
 const app = require("./app");
 const connectDatabase = require("./db/Database");
 const cloudinary = require("cloudinary");
-
+const path = require('path')
 // Handling uncaught Exception
 process.on("uncaughtException", (err) => {
   console.log(`Error: ${err.message}`);
@@ -9,9 +9,17 @@ process.on("uncaughtException", (err) => {
 });
 
 // config
-if (process.env.NODE_ENV !== "PRODUCTION") {
-  require("dotenv").config({
-    path: "config/.env",
+const __dirname1 = path.resolve();
+if (process.env.NODE_ENV === "PRODUCTION") {
+  
+  app.use(express.static(path.join(__dirname1, '/frontend/build')))
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1,"frontend","build","index.html"))
+  })
+} else {
+  app.get('/', (req, res) => {
+    res.send("working fine")
+    
   });
 }
 
